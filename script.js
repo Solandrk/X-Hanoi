@@ -37,31 +37,36 @@ function getRandomColor() {
   return color;
 }
 
-
 function moveDisk(disk, rod) {
-    let bottom = disk.css("bottom");
-    disk.animate(
-      {
-        bottom: "100%",
+  let bottom = disk.css("bottom");
+  let left = disk.position().left;
+  disk.animate(
+    {
+      bottom: "100%",
+    },
+    {
+      duration: 1000,
+    }
+  );
+  disk.animate(
+    {
+      left: rod.offset().left -left,
+    },
+    {
+      duration: 1000,
+      complete: () => {
+        disk.css({left:left});
+        rod.append(disk);
       },
-      {
-        duration: 1000,
-      }
-    );
-    disk.animate(
-      {
-        left: rod.offset().left,
-      },
-      {
-        duration: 1000,
-      }
-    );
-    disk.animate(
-      {
-        bottom: bottom,
-      },
-      {
-        duration: 1000,
-      }
-    );
-  }
+    }
+  );
+
+  disk.animate(
+    {
+      bottom: bottom,
+    },
+    {
+      duration: 1000,
+    }
+  );
+}
