@@ -11,7 +11,7 @@
       crossorigin="anonymous"
     />
     <title>Document</title>
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   </head>
@@ -80,31 +80,11 @@
         $("#counter").change((text) => {
           let num = Number.parseInt($("#counter").val());
           for (let i = 0; i < 3; i++) {
+            rodsDisks[i] = [];
             createDisks(rods[i], rodsDisks[i], num);
           }
-          console.log(rods, rodsDisks);
         });
 
-        function createDisks(rod, rodDisks, diskCount) {
-          rod.children('.disk').remove();
-          for (let i = 0; i < diskCount; i++) {
-            let disk = $("<div></div>");
-            disk.addClass("disk");
-            disk.css("background-color", getRandomColor());
-            disk.css("width", 90 - i * 10);
-            disk.css("bottom", i * 10);
-            rod.append(disk);
-            rodDisks.push(disk);
-          }
-        }
-        function getRandomColor() {
-          var letters = "0123456789ABCDEF";
-          var color = "#";
-          for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
-        }
       });
     </script>
 
