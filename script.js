@@ -1,4 +1,15 @@
-const moves = [];
+var moves = [];
+
+function Hanoi(A, B, C, n) {
+  if (n == 1) {
+    moves.push([A, C]);
+    return;
+  } else {
+    Hanoi(A, C, B, n - 1);
+    moves.push([A, C]);
+    Hanoi(B, A, C, n - 1);
+  }
+}
 
 function ExHanoi(A, B, C, n) {
   if (n == 1) {
@@ -37,9 +48,9 @@ function getRandomColor() {
   return color;
 }
 
-function moveDisk(disk, rod) {
-  let bottom = disk.css("bottom");
+function moveDisk(disk, rod,position) {
   let left = disk.position().left;
+  let goalLeft = rod.position().left - disk.parent().position().left;
   disk.animate(
     {
       bottom: "100%",
@@ -50,12 +61,12 @@ function moveDisk(disk, rod) {
   );
   disk.animate(
     {
-      left: rod.offset().left -left,
+      left: goalLeft,
     },
     {
       duration: 1000,
       complete: () => {
-        disk.css({left:left});
+        disk.css({ left: left });
         rod.append(disk);
       },
     }
@@ -63,7 +74,7 @@ function moveDisk(disk, rod) {
 
   disk.animate(
     {
-      bottom: bottom,
+      bottom: (position-1)*10,
     },
     {
       duration: 1000,

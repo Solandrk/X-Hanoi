@@ -78,6 +78,7 @@
       $(document).ready(function () {
         var rodsDisks = [[], [], []];
         var rods = [$("#rod-1"), $("#rod-2"), $("#rod-3")];
+        
         $("#counter").change((text) => {
           let num = Number.parseInt($("#counter").val());
           for (let i = 0; i < 3; i++) {
@@ -87,9 +88,18 @@
         });
 
         $("#start").click(async () => {
-          for (let i = rodsDisks[0].length-1; i >=0 ; i--) {
-            moveDisk(rodsDisks[0][i], rods[1]);
-            await sleep(1000);
+          let num = Number.parseInt($("#counter").val());
+          moves = [];
+          ExHanoi('0','1','2',num);
+          console.log(moves);
+          for (let i = 0; i < moves.length; i++) {
+              let disks = rodsDisks[moves[i][0]];
+              let goalDisks = rodsDisks[moves[i][1]];
+              let rod = rods[moves[i][1]];
+              let disk = disks.pop();
+              goalDisks.push(disk);
+              moveDisk(disk,rod,goalDisks.length);
+              await sleep(3000);
           }
         });
       });
