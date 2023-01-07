@@ -1,0 +1,21 @@
+.disk {
+  position: absolute;
+  height: 10px;
+  border-radius: 4px;
+}
+#container{
+    display: flex;
+    flex: 6;
+    height: 500px;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+.rod-container{
+    justify-content: center;
+    display: flex;
+    position: relative;
+    width: 90px;
+}
+.rod{
+    border-radius: 4px; margin: auto; width: 15px
+}
