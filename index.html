@@ -47,18 +47,28 @@
           Start
         </button>
         <button
+          id="manually"
           style="margin-top: 8px; height: fit-content"
+          type="button"
+          class="btn btn-dark"
+        >
+          Start Manually
+        </button>
+        <button
+          id="pause"
+          style="display: none; margin-top: 8px; height: fit-content"
           type="button"
           class="btn btn-dark"
         >
           Pause
         </button>
         <button
-          style="margin-top: 8px; height: fit-content"
+          id="reflash"
+          style="display: none; margin-top: 8px; height: fit-content"
           type="button"
           class="btn btn-dark"
         >
-          Reflesh
+          Reflash
         </button>
 
         <div style="margin-top: 8px" class="input-group mb-3">
@@ -78,7 +88,10 @@
       $(document).ready(function () {
         var rodsDisks = [[], [], []];
         var rods = [$("#rod-1"), $("#rod-2"), $("#rod-3")];
-        
+        var pause = false;
+        var onGoing = false;
+        var reflash = false;
+        var manualCounter = 0;
         $("#counter").change((text) => {
           let num = Number.parseInt($("#counter").val());
           for (let i = 0; i < 3; i++) {
@@ -88,18 +101,94 @@
         });
 
         $("#start").click(async () => {
-          let num = Number.parseInt($("#counter").val());
-          moves = [];
-          ExHanoi('0','1','2',num);
-          console.log(moves);
-          for (let i = 0; i < moves.length; i++) {
+          if (pause) {
+            pause = false;
+            return;
+          }
+          if (!onGoing && rodsDisks[0].length > 0) {
+            $("#manually").hide();
+            $("#pause").show();
+            $("#reflash").show();
+            onGoing = true;
+            let num = Number.parseInt($("#counter").val());
+            moves = [];
+            ExHanoi("0", "1", "2", num);
+            console.log(moves);
+            for (let i = 0; i < moves.length; i++) {
               let disks = rodsDisks[moves[i][0]];
               let goalDisks = rodsDisks[moves[i][1]];
               let rod = rods[moves[i][1]];
               let disk = disks.pop();
               goalDisks.push(disk);
-              moveDisk(disk,rod,goalDisks.length);
+              moveDisk(disk, rod, goalDisks.length);
               await sleep(3000);
+              if (reflash) break;
+              if (pause) {
+                await new Promise((resolve) =>
+                  setInterval(() => {
+                    if (!pause || reflash) {
+                      resolve();
+                      clearInterval(this);
+                    }
+                  }, 1000)
+                );
+                if (reflash) {
+                  $("#pause").click();
+                  break;
+                }
+              }
+            }
+            if (reflash) {
+              $("#counter").change();
+              reflash = false;
+              onGoing = false;
+            }
+            $("#manually").show();
+            $("#pause").hide();
+            $("#reflash").hide();
+            onGoing = false;
+          }
+        });
+
+        $("#pause").click(() => {
+          pause = !pause;
+          if (pause) $("#pause").html("Continue");
+          if (!pause) $("#pause").html("Pause");
+        });
+
+        $("#reflash").click(() => {
+          reflash = true;
+          if (manualCounter > 0) {
+            $("#start").show();
+            $("#reflash").hide();
+            $("#manually").html("Start Manually");
+            $('#counter').change();
+            onGoing = false;
+            
+          }
+        });
+
+        $("#manually").click(() => {
+          if (!onGoing && rodsDisks[0].length > 0) {
+            $("#start").hide();
+            $("#reflash").show();
+            $("#manually").html("Next");
+            manualCounter = 0;
+            onGoing = true;
+            let num = Number.parseInt($("#counter").val());
+            moves = [];
+            ExHanoi("0", "1", "2", num);
+          } else if (onGoing) {
+            let disks = rodsDisks[moves[manualCounter][0]];
+            let goalDisks = rodsDisks[moves[manualCounter][1]];
+            let rod = rods[moves[manualCounter][1]];
+            let disk = disks.pop();
+            goalDisks.push(disk);
+            moveDisk(disk, rod, goalDisks.length);
+            manualCounter++;
+            if (manualCounter >= moves.length) {
+              onGoing = false;
+            }
           }
         });
       });

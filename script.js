@@ -33,7 +33,7 @@ function createDisks(rod, rodDisks, diskCount) {
     let disk = $("<div></div>");
     disk.addClass("disk");
     disk.css("background-color", getRandomColor());
-    disk.css("width", 90 - i * 10);
+    disk.css("width", 120 - i * 10);
     disk.css("bottom", i * 10);
     rod.append(disk);
     rodDisks.push(disk);
@@ -50,7 +50,7 @@ function getRandomColor() {
 
 function moveDisk(disk, rod,position) {
   let left = disk.position().left;
-  let goalLeft = rod.position().left - disk.parent().position().left;
+  let goalLeft = rod.position().left - disk.parent().position().left + left;
   disk.animate(
     {
       bottom: "100%",
