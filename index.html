@@ -13,24 +13,19 @@
     <title>Document</title>
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   </head>
   <body>
     <div style="display: flex; flex-direction: row" class="container-full">
       <div id="container" class="bg-dark">
-        <div class="rod-container h-50">
+        <div id="rod-1" class="rod-container h-50">
           <div class="rod bg-light h-100"></div>
-          <div class="disk bg-info"></div>
-          <div style="bottom: 0;width: 90px;" class="disk bg-danger"></div>
         </div>
-        <div class="rod-container h-50">
+        <div id="rod-2" class="rod-container h-50">
           <div class="rod bg-light h-100"></div>
-          <div class="disk bg-info"></div>
-          <div style="bottom: 0;width:90px;" class="disk bg-info"></div>
         </div>
-        <div class="rod-container h-50">
+        <div id="rod-3" class="rod-container h-50">
           <div class="rod bg-light h-100"></div>
-          <div class="disk bg-info"></div>
-          <div style="bottom: 0;width: 90px;" class="disk bg-success"></div>
         </div>
       </div>
       <div
@@ -48,14 +43,14 @@
           type="button"
           class="btn btn-dark"
         >
-          Stop
+          Start
         </button>
         <button
           style="margin-top: 8px; height: fit-content"
           type="button"
           class="btn btn-dark"
         >
-          Start
+          Pause
         </button>
         <button
           style="margin-top: 8px; height: fit-content"
@@ -64,8 +59,54 @@
         >
           Reflesh
         </button>
+
+        <div style="margin-top: 8px" class="input-group mb-3">
+          <input
+            id="counter"
+            type="text"
+            class="form-control"
+            placeholder="Count"
+            aria-describedby="basic-addon2"
+            style="font-size: 14px"
+          />
+        </div>
       </div>
     </div>
+
+    <script>
+      $(document).ready(function () {
+        var rodsDisks = [[], [], []];
+        var rods = [$("#rod-1"), $("#rod-2"), $("#rod-3")];
+        $("#counter").change((text) => {
+          let num = Number.parseInt($("#counter").val());
+          for (let i = 0; i < 3; i++) {
+            createDisks(rods[i], rodsDisks[i], num);
+          }
+          console.log(rods, rodsDisks);
+        });
+
+        function createDisks(rod, rodDisks, diskCount) {
+          rod.children('.disk').remove();
+          for (let i = 0; i < diskCount; i++) {
+            let disk = $("<div></div>");
+            disk.addClass("disk");
+            disk.css("background-color", getRandomColor());
+            disk.css("width", 90 - i * 10);
+            disk.css("bottom", i * 10);
+            rod.append(disk);
+            rodDisks.push(disk);
+          }
+        }
+        function getRandomColor() {
+          var letters = "0123456789ABCDEF";
+          var color = "#";
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+      });
+    </script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
